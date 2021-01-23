@@ -6,8 +6,8 @@ Copyright (c) 2021 by Thomas J. Daley, J.D.
 from datetime import datetime
 from decimal import Decimal
 import operator
-from payment_schedule import payment_schedule
-from stepdown import stepdown
+from .payment_schedule import payment_schedule
+from .stepdown import stepdown
 
 
 def combined_payment_schedule(

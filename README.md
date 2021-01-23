@@ -45,7 +45,7 @@ children = [child]
 
 ```
 from decimal import Decimal
-from csutils.stepdown import stepdown
+from csutils import stepdown
 
 stepdown_schedule = stepdown(
     children=children,
@@ -63,8 +63,8 @@ The functions that create schedules consume a *stepdown schedule*. That is to sa
 ```
 from datetime import datetime
 from decimal import Decimal
-from csutils.stepdown import stepdown
-from csutils.payment_schedule import payment_schedule
+from csutils stepdown
+from csutils import payment_schedule
 
 payments_due = payment_schedule(
     initial_amount=Decimal(1000.00),
@@ -82,8 +82,8 @@ there is an optional argument,*fixed_payment*, that you set to ```True``` like t
 ```
 from datetime import datetime
 from decimal import Decimal
-from csutils.stepdown import stepdown
-from csutils.payment_schedule import payment_schedule
+from csutils import stepdown
+from csutils import payment_schedule
 
 insurance_payments_due = payment_schedule(
     initial_amount=Decimal(350.00),
@@ -103,7 +103,7 @@ as applicable, to create a single list of payments due.
 ```
 from datetime import datetime
 from decimal import Decimal
-from csutils.combined_payment_schedule import combined_payment_schedule
+from csutils import combined_payment_schedule
 
 start_date = datetime(2019, 5, 1)
 cs_payment = Decimal(1000.00)
