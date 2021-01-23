@@ -22,7 +22,7 @@ def stepdown(children: list, initial_payment_amount: Decimal, num_children_not_b
     Each step-down date in the returned list will be a dict with these keys:
         * child (dict) - The dict provided by the caller re this this child
         * last_payment_date (datetime) - The date after which child support steps down
-    
+
     Args:
         children (list): List of child dicts
         initial_payment_amount (Decimal): Amount of initial payment
@@ -32,10 +32,20 @@ def stepdown(children: list, initial_payment_amount: Decimal, num_children_not_b
     Returns:
         (list): List of dicts, one for each step down date. Values will be sorted
         by the stepdown_date attribute (ascending).
-    
+
     Raises:
         ValueError: If a child is not properly constructed, i.e. missing
         a required key or having the wrong datatype as the value.
+
+    Example:
+        children = [
+        {'name': "Tom", 'dob': datetime(2015, 1, 29)},
+        {'name': "Cindy", 'dob': datetime(2017, 5, 29)},
+        {'name': "Ava", 'dob': datetime(2005, 9, 4)}
+    ]
+
+        print(stepdown(children, Decimal(1000)))
+
     """
     stepdown_dates = []
     initial_child_count = len(children)
@@ -58,16 +68,16 @@ def stepdown(children: list, initial_payment_amount: Decimal, num_children_not_b
 
     return sorted(stepdown_dates, key=lambda k: k['last_payment_date'])
 
-REQUIRED_KEYS = [('name', str), ('dob', datetime)]
+__REQUIRED_KEYS = [('name', str), ('dob', datetime)]
 def __verify_child(child: dict) -> bool:
-    for key_name, data_type in REQUIRED_KEYS:
+    for key_name, data_type in __REQUIRED_KEYS:
         if key_name not in child:
             raise(ValueError(f"Invalid child. Missing key {key_name}"))
         if not isinstance(child[key_name], data_type):
             raise(ValueError(f"Invalid child. Value for '{key_name}'' must be {str(data_type)}"))
     return True
 
-CHILD_SUPPORT_FACTORS = [
+__CHILD_SUPPORT_FACTORS = [
     [.2000, .2500, .3000, .3500, .4000, .4000, .4000],
     [.1750, .2250, .2738, .3220, .3733, .3771, .3800],
     [.1600, .2063, .2520, .3033, .3543, .3600, .3644],
@@ -78,11 +88,11 @@ CHILD_SUPPORT_FACTORS = [
     [.1300, .1722, .2160, .2609, .3067, .3138, .3200]
 ]
 def __stepdown_amount(initial_payment_amount: Decimal, initial_child_count: int, remaining_child_count: int, num_children_not_before_court: int) -> Decimal:
-    if num_children_not_before_court > len(CHILD_SUPPORT_FACTORS):
-        row = len(CHILD_SUPPORT_FACTORS) - 1
+    if num_children_not_before_court > len(__CHILD_SUPPORT_FACTORS):
+        row = len(__CHILD_SUPPORT_FACTORS) - 1
     else:
         row = num_children_not_before_court
-    factors = CHILD_SUPPORT_FACTORS[row]
+    factors = __CHILD_SUPPORT_FACTORS[row]
 
     if remaining_child_count > len(factors):
         new_factor = factors[-1]
@@ -93,51 +103,24 @@ def __stepdown_amount(initial_payment_amount: Decimal, initial_child_count: int,
         initial_factor = factors[-1]
     else:
         initial_factor = factors[initial_child_count-1]
-    
-    print("Initial   :", initial_payment_amount)
-    print("Init count:", initial_child_count)
-    print("Rem count :", remaining_child_count)
-    print("Init factr:", initial_factor)
-    print("New factor:", new_factor)
 
     net_resources = initial_payment_amount / Decimal(initial_factor)
-    print("Net resour:", net_resources)
     new_amount = Decimal(net_resources * Decimal(new_factor))
-    print("New amount:", new_amount)
-    print("*" * 40)
     return round(new_amount, 2)
-    
 
 
-def test():
-    test_children = [
+"""
+Example usage.
+"""
+def main():
+
+    children = [
         {'name': "Tom", 'dob': datetime(2015, 1, 29)},
         {'name': "Cindy", 'dob': datetime(2017, 5, 29)},
         {'name': "Ava", 'dob': datetime(2005, 9, 4)}
     ]
-    print(stepdown(test_children, Decimal(1000)))
 
-def test__verify_child():
-    test_children = [
-        ({}, False),
-        ({'name': 15 }, False),
-        ({'name': 'Tom'}, False),
-        ({'name': 'Tom', 'dob': '1964-01-29'}, False),
-        ({'name': 'Tom', 'dob': datetime(1964,1,29)}, True)
-    ]
+    print(stepdown(children, Decimal(1000)))
 
-    for test_child, correct_result in test_children:
-        try:
-            if result := __verify_child(test_child):
-                print("Good child:", test_child)
-        except ValueError as e:
-            result = False
-            print(str(e))
-        if result == correct_result:
-            print("Passed")
-        else:
-            print("-----Failed")
-
-
-test__verify_child()
-test()
+if __name__ == '__main__':
+    main()

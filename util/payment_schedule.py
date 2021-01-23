@@ -1,7 +1,7 @@
 """
 payment_schedule.py - Create a payment schedule based on a payment schedule.
 
-Copyright (c) 2021 by Thomas J. Daley, J.D. All Rights Reserved.
+Copyright (c) 2021 by Thomas J. Daley, J.D.
 """
 from datetime import datetime
 from decimal import Decimal
@@ -58,10 +58,8 @@ def payment_schedule(
             payment_amount = initial_amount
         else:
             payment_amount = next_stepdown['payment_amount']
-        # print(next_stepdown)
-        # print(f"@@@@@@@@@@@@@Payment of {payment_amount} due until {oldest_remaining_child_name} ages out.")
+
         while next_due_date <= next_stepdown['last_payment_date']:
-            # print(next_due_date, description, payment_amount, note)
             payment = {
                 'due_date': next_due_date,
                 'description': description,
@@ -74,12 +72,14 @@ def payment_schedule(
         note = f"{oldest_remaining_child_name} aged out."
     return schedule
 
+
 """
 For Testing
 """
-from stepdown import stepdown
-step_down_schedule = stepdown(
-    [
+def main():
+    from stepdown import stepdown
+
+    children = [
         {
             'name': "Tom",
             'dob': datetime(2005, 1, 29)
@@ -92,12 +92,27 @@ step_down_schedule = stepdown(
             'name': "Ava",
             'dob': datetime(2003, 9, 4)
         }
-    ],
-    1000,
-    0
-)
-print(step_down_schedule)
-print('*' * 80)
-s = payment_schedule(Decimal(1000.00), 12, datetime(2018, 1, 1), step_down_schedule, [1], 'Regular child support payment')
-for payment in s:
-    print(payment['due_date'], ',', payment['description'], ',', payment['amount_due'], ',', payment['note'])
+    ]
+
+    initial_cs_payment_due = Decimal(1000.00)
+
+    step_down_schedule = stepdown(
+        children=children,
+        initial_payment_amount=initial_cs_payment_due,
+        num_children_not_before_court=0
+    )
+
+    schedule = payment_schedule(
+        initial_amount=initial_cs_payment_due,
+        n_per_year=12,
+        start_date=datetime(2019, 1, 1),
+        step_down_schedule=step_down_schedule,
+        description="Child support payment due"
+    )
+
+    for payment in schedule:
+        print(payment['due_date'], ',', payment['description'], ',', payment['amount_due'], ',', payment['note'])
+
+
+if __name__ == '__main__':
+    main()
