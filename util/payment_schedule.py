@@ -14,7 +14,8 @@ def payment_schedule(
     start_date: datetime,
     step_down_schedule: list,
     month_days: list[int] = None,
-    description: str = 'Child support payment due'
+    description: str = 'Child support payment due',
+    fixed_payment: bool = False
 ) -> list:
     """
     Create a payment schedule with one entry for every payment that is due.
@@ -36,6 +37,9 @@ def payment_schedule(
                                     n_per_year = 24 . . . . . [1, 15]
                                     n_per_year = else . . . . not used
         description (str): A descriptive string returned in payment list.
+        fixed_payment (bool): If True, every payment on the list will be equal to *initial_amount*. This
+                              is used for insurance reimbursement schedules where the amount reimbursed
+                              does not change based on the number of children. Default = False
     
     Returns:
         (list): List of payments, each being a dict with these keys:
@@ -50,7 +54,10 @@ def payment_schedule(
     while step_down_schedule:
         next_stepdown = step_down_schedule.pop(0)
         oldest_remaining_child_name = next_stepdown['child']['name']
-        payment_amount = next_stepdown['payment_amount']
+        if fixed_payment:
+            payment_amount = initial_amount
+        else:
+            payment_amount = next_stepdown['payment_amount']
         # print(next_stepdown)
         # print(f"@@@@@@@@@@@@@Payment of {payment_amount} due until {oldest_remaining_child_name} ages out.")
         while next_due_date <= next_stepdown['last_payment_date']:
