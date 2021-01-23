@@ -64,7 +64,8 @@ def payment_schedule(
                 'due_date': next_due_date,
                 'description': description,
                 'amount_due': payment_amount,
-                'note': note
+                'note': note,
+                'remaining_amount': payment_amount
             }
             schedule.append(payment)
             note = ''
