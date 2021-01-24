@@ -5,7 +5,7 @@ Update package with the following commands:
 
 $ python setup.py sdist bdist_wheel
 $ twine check dist/*
-$ twine upload --config-file .pypirc dist/*
+$ twine upload --config-file .pypirc --repository csutils dist/*
 """
 import pathlib
 from setuptools import setup, find_packages
