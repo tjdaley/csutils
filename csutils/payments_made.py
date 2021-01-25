@@ -20,9 +20,11 @@ def payments_made(tsv: str, filename: str = None) -> list:
     by the user and pasted into a text box, it appears as tab-separated values. This
     function converts the TSVs into a list of dicts where there is one list entry per
     payment made and each *payment* dict has at least the following keys:
-        'payment_date' (datetime): Date payment was made.
-        'payment_amount' (Decimal): Amount of payment.
-        'unapplied_amount' (Decimal): Amount of paymente that has not been applied to
+        'type' (str): 'Z' to indicate a payment made
+        'date' (datetime): Date payment was made.
+        'description' (str): "Payment made"
+        'amount' (Decimal): Amount of payment.
+        'remaining_amount' (Decimal): Amount of payment that has not been applied to
             a payment that is due. This starts as the same value as *payment_amount*
             and then the consuming application decrements this to zero as the payment
             is applied to outstanding balances.
@@ -49,8 +51,8 @@ def payments_made(tsv: str, filename: str = None) -> list:
         print(payments)
         >>>
         [
-            {payment_date: datetime(2021,1,1,0,0), payment_amount: 387.50},
-            {payment_date: datetime(2021,2,1,0,0), payment_amount: 387.50},
+            {type: 'Z', date: datetime(2021,1,1,0,0), amount: 387.50, remaining_amount: 387.50, description='Payment made'},
+            {type: 'Z', date: datetime(2021,2,1,0,0), amount: 387.50, remaining_amount: 387.50, description='Payment made'},
         ]
     """
     payments = []
@@ -74,10 +76,16 @@ def payments_made(tsv: str, filename: str = None) -> list:
         except Exception:
             raise ValueError(f"Invalid payment amount of '{fields[TSV_AMOUNT_COL]}' in row # {row_number}")
 
-        payment = {'payment_date': payment_date, 'payment_amount': payment_amount}
+        payment = {
+            'type': 'Z',
+            'date': payment_date,
+            'description': "Payment made",
+            'amount': payment_amount,
+            'remaining_amount': payment_amount
+        }
         payments.append(payment)
 
-    return sorted(payments, key=lambda k: k['payment_date'])
+    return sorted(payments, key=lambda k: k['date'])
 
 
 def __load_file(filename: str) -> str:

@@ -6,8 +6,8 @@ Copyright (c) 2021 by Thomas J. Daley, J.D.
 from datetime import datetime
 from decimal import Decimal
 import operator
-from .payment_schedule import payment_schedule
-from .stepdown import stepdown
+from payment_schedule import payment_schedule
+from stepdown import stepdown
 
 
 def combined_payment_schedule(
@@ -83,7 +83,7 @@ def combined_payment_schedule(
         dental_insurance_schedule = []
 
     combined_schedule = regular_schedule + health_insurance_schedule + dental_insurance_schedule
-    combined_schedule.sort(key = operator.itemgetter('due_date', 'description'))
+    combined_schedule.sort(key = operator.itemgetter('date', 'description'))
     return combined_schedule
 
 

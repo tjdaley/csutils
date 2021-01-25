@@ -43,15 +43,19 @@ def payment_schedule(
     
     Returns:
         (list): List of payments, each being a dict with these keys:
-                'due_date' (datetime): Date payment is due
+                'type' (str): 'A' to indicate a payment
+                'date' (datetime): Date payment is due
                 'description' (str): From *description* argument
-                'amount_due' (Decimal): Amount due for that payment
-                'note' (str): Any explanation for why the payment amount changed.
+                'amount' (Decimal): Amount due for that payment
+                'note' (str): Any explanation for why the payment amount changed
+                'remaining_amount' (Decimal): Amount that has not been paid
     """
     schedule = []
     next_due_date = start_date
     note = ''
-    while step_down_schedule:
+    today = datetime.now()
+    should_continue = True  # Set to False when the payment schedule goes past today.
+    while step_down_schedule and should_continue:
         next_stepdown = step_down_schedule.pop(0)
         oldest_remaining_child_name = next_stepdown['child']['name']
         if fixed_payment:
@@ -61,15 +65,19 @@ def payment_schedule(
 
         while next_due_date <= next_stepdown['last_payment_date']:
             payment = {
-                'due_date': next_due_date,
+                'type': 'A',
+                'date': next_due_date,
                 'description': description,
-                'amount_due': payment_amount,
+                'amount': payment_amount,
                 'note': note,
                 'remaining_amount': payment_amount
             }
             schedule.append(payment)
             note = ''
             next_due_date = next_due_date + relativedelta(months=+1)
+            if next_due_date > today:
+                should_continue = False
+                break
         note = f"{oldest_remaining_child_name} aged out."
     return schedule
 
@@ -112,7 +120,7 @@ def main():
     )
 
     for payment in schedule:
-        print(payment['due_date'], ',', payment['description'], ',', payment['amount_due'], ',', payment['note'])
+        print(payment['date'], ',', payment['description'], ',', payment['amount'], ',', payment['note'])
 
 
 if __name__ == '__main__':
