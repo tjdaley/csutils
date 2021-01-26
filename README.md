@@ -4,6 +4,10 @@
 
 This package contains utility functions for creating step-down schedules, payment schedules, and compliance exhibits.
 
+## Requirements
+
+Requires Python v. 3.9 or higher.
+
 ## Installation
 
 ```
