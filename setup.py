@@ -5,14 +5,14 @@ Update package with the following commands:
 
 $ python setup.py sdist bdist_wheel
 $ twine check dist/*
-$ twine upload --config-file .pypirc --repository csutils dist/*
+$ twine upload --config-file .pypirc dist/*
 """
 import pathlib
 from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.5'
+VERSION = '0.1.6'
 PACKAGE_NAME = 'csutils'
 AUTHOR = 'Thomas J. Daley, J.D.'
 AUTHOR_EMAIL = 'tom@powerdaley.com'
