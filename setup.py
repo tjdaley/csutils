@@ -6,13 +6,17 @@ Update package with the following commands:
 $ python setup.py sdist bdist_wheel
 $ twine check dist/*
 $ twine upload --config-file .pypirc dist/*
+
+If the "twine" command fails (after you're sure you installed it), use
+$ python -m twine check dist/*
+...etc...
 """
 import pathlib
 from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.7'
+VERSION = '0.1.8'
 PACKAGE_NAME = 'csutils'
 AUTHOR = 'Thomas J. Daley, J.D.'
 AUTHOR_EMAIL = 'tom@powerdaley.com'
