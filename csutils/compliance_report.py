@@ -18,8 +18,8 @@ Obligor instead paid a total of {paid}, leaving {remainder} in arrears.
 
 
 def compliance_report(
-    payments_due: list[dict],
-    payments_made: list[dict],
+    payments_due: list,
+    payments_made: list,
 ) -> list[dict]:
     """
     Create a date-sorted list of payments due and payments made
@@ -82,8 +82,8 @@ def compliance_report(
 
 
 def enforcement_report(
-    payments_due: list[dict],
-    payments_made: list[dict],
+    payments_due: list,
+    payments_made: list,
 ) -> list[dict]:
     """
     Apply payments that were made to payments that were due.
@@ -120,7 +120,7 @@ def enforcement_report(
     return combined_list
 
 
-def violations(enforcement_report: list[dict]) -> list[str]:
+def violations(enforcement_report: list) -> list:
     """
     Create a list violations to include in enforcement pleadings.
 

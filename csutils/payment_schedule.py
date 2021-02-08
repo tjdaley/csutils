@@ -13,7 +13,7 @@ def payment_schedule(
     n_per_year: int,
     start_date: datetime,
     step_down_schedule: list,
-    month_days: list[int] = None,
+    month_days: list = None,
     description: str = 'Child support payment due',
     fixed_payment: bool = False
 ) -> list:
