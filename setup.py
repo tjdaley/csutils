@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.8'
+VERSION = '0.1.9'
 PACKAGE_NAME = 'csutils'
 AUTHOR = 'Thomas J. Daley, J.D.'
 AUTHOR_EMAIL = 'tom@powerdaley.com'
