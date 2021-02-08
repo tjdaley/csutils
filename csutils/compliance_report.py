@@ -112,11 +112,12 @@ def enforcement_report(
     combined_list = payments_due + payments_made
     combined_list.sort(key=operator.itemgetter('date', 'type'))
 
-    payment_idx = 0
+    payment_idx = __next_payment_idx(combined_list, 0)
 
-    while payment_idx := __next_payment_idx(combined_list, payment_idx):
+    while payment_idx:
         due_idx = __prev_due_idx(combined_list, payment_idx)
         __apply_payment(payment_idx, due_idx, combined_list)
+        payment_idx = __next_payment_idx(combined_list, payment_idx)
     return combined_list
 
 
