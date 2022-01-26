@@ -13,7 +13,7 @@ DELIMITER = '\t'
 INDICTMENT = """
 According to the terms of the Child Support Order, Obligor was required to pay {amount} to Obligee on {date}.
 Obligor violated the Child Support Order by failing to pay the full amount of {amount} on or before {date} for {description}.
-Obligor instead paid a total of {paid}, leaving {remainder} in arrears.
+Obligor instead paid a total of {paid}{payment_list}, leaving {remainder} in arrears.
 """
 
 
@@ -150,11 +150,30 @@ def violations(enforcement_report: list) -> list:
                 .replace('{date}', due_date) \
                 .replace('{description}', pay_record['description'].lower()) \
                 .replace('{paid}', locale.currency(pay_record['amount'] - pay_record['remaining_amount'], grouping=True)) \
+                .replace('{payment_list}', __payment_list(pay_record)) \
                 .replace('{remainder}', locale.currency(pay_record['remaining_amount'], grouping=True)) \
                 .replace('\n', " ")
             violations.append(indictment)
     return violations
 
+
+def __payment_list(pay_record: dict) -> str:
+    """
+    Create a text string listing the payments that were made.
+    """
+    payment_list = ''
+    payments = pay_record.get('payments', [])
+    if not payments:
+        return payment_list
+
+    for payment in payments:
+        payment_amount = locale.currency(payment['amount'], grouping=True)
+        payment_date = datetime.strftime(payment['date'], '%B %d, %Y').replace(' 0', ' ')
+        if payment_list != '':
+            payment_list += "; "
+        payment_list += f"{payment_amount} on {payment_date}"
+
+    return f" ({payment_list})"
 
 def __apply_payment(payment_idx: int, due_idx: int, the_list: list):
     payment = the_list[payment_idx]
