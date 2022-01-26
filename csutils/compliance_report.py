@@ -186,7 +186,18 @@ def __prev_due_idx(the_list: list, start_idx: int) -> int:
         pay_record = the_list[idx]
         if pay_record['type'] == 'A' and pay_record['remaining_amount'] > 0:
             return idx
-    return None
+    #
+    # Looks like we're all caught up. Look for a future payable to apply the payment
+    # to. (TJD 2022-Jan-25)
+    #
+    for idx in range(start_idx+1, len(the_list)):
+        pay_record = the_list[idx]
+        # print(f"\t\t >> IDX: {idx}  Type: {pay_record['type']}  Bal: {pay_record['remaining_amount']}")
+        if pay_record['type'] == 'A' and pay_record['remaining_amount'] > 0:
+            return idx
+
+     # If we get this far, there is no arrearage per this payment record.
+     return None
 
 
 def main():
