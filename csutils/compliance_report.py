@@ -12,7 +12,7 @@ import operator
 DELIMITER = '\t'
 INDICTMENT = """
 According to the terms of the Child Support Order, Obligor was required to pay {amount} to Obligee on {date}.
-Obligor violated the Child Support Order by failing to pay the full amount of {amount} on or before {date}.
+Obligor violated the Child Support Order by failing to pay the full amount of {amount} on or before {date} for {description}.
 Obligor instead paid a total of {paid}, leaving {remainder} in arrears.
 """
 
@@ -148,6 +148,7 @@ def violations(enforcement_report: list) -> list:
             indictment = INDICTMENT \
                 .replace('{amount}', locale.currency(pay_record['amount'], grouping=True)) \
                 .replace('{date}', due_date) \
+                .replace('{description}', pay_record['description'].lower()) \
                 .replace('{paid}', locale.currency(pay_record['amount'] - pay_record['remaining_amount'], grouping=True)) \
                 .replace('{remainder}', locale.currency(pay_record['remaining_amount'], grouping=True)) \
                 .replace('\n', " ")
