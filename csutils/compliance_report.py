@@ -173,7 +173,8 @@ def __payment_list(pay_record: dict) -> str:
             payment_list += "; "
         if pay_record['date'] <= payment['date']:
             payment_list += f"{payment_amount} on {payment_date}"
-        payment_list += f"{payment_amount} carried forward from {payment_date}"
+        else:
+            payment_list += f"{payment_amount} carried forward from {payment_date}"
 
     return f" ({payment_list})"
 
